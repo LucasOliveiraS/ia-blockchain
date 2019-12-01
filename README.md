@@ -1,4 +1,4 @@
-![IABlockchain](https://github.com/LucasOliveiraS/blockchain-datastorage/blob/master/assets/logo3.png)
+![IABlockchain](https://github.com/LucasOliveiraS/ia-blockchain/blob/master/assets/logo3.png)
 
 # IA Blockchain
 
