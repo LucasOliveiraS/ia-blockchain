@@ -10,9 +10,7 @@ A Blockchain Ethereum atuária como um fonte de dados, de modo que os participan
 
 É possível que os dados compartilhados pelo integrante possam trazer lucro. Participantes que compartilharem dados ruins serão penalizados.
 
-Este é o diagrama de funcionamento:
-
-
+![IABlockchain](https://github.com/LucasOliveiraS/ia-blockchain/blob/master/assets/diagrama_inicial.png)
 
 ## Dê uma estrela! :star:
 
