@@ -49,27 +49,26 @@ export const TrainingForm = () => {
 
                     if(response.ok) {
                         console.log("Response worked!")
+                        window.ethereum.send('eth_sendTransaction', [{
+                            "from": "0x690809206b73994282910F1740a729a89aF4beCa",
+                            "to": "0xc0A08eB59ab5Fe19403d68555F4B51FC79c1B7b0",
+                            "gas": "0x76c0", // 30400
+                            "gasPrice": "0x9184e72a000", // 10000000000000
+                            "value": "0x9184e72a"
+                          }])
+                        .then(function (result) {
+                        // The result varies by method, per the JSON RPC API.
+                        // For example, this method will return a transaction hash on success.
+                        })
+                        .catch(function (error) {
+                        // Like a typical promise, returns an error on rejection.
+                        })
+
+                        const data = await response.json();
+                        console.log('Saída: ',data.message);
                     } else{
                         console.log("Not worked!")
-                        console.log(trainData['train'])
-                        console.log(trainData['label'])
                     }
-
-
-                    window.ethereum.send('eth_sendTransaction', [{
-                        "from": "0x690809206b73994282910F1740a729a89aF4beCa",
-                        "to": "0xc0A08eB59ab5Fe19403d68555F4B51FC79c1B7b0",
-                        "gas": "0x76c0", // 30400
-                        "gasPrice": "0x9184e72a000", // 10000000000000
-                        "value": "0x9184e72a"
-                      }])
-                    .then(function (result) {
-                    // The result varies by method, per the JSON RPC API.
-                    // For example, this method will return a transaction hash on success.
-                    })
-                    .catch(function (error) {
-                    // Like a typical promise, returns an error on rejection.
-                    })
 
                 }}>
                     submit

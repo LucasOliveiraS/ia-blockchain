@@ -54,8 +54,6 @@ def transact():
 		train = classifier.cleanData(receive['train'])
 		label = int(receive['label'])
 
-		print("--------------------------", train, label)
-
 		train, label, gas = contract.addData(train, label, 420000)
 		key = connection.functions.handleAddData(contract.address, train, label).buildTransaction({'nonce': web3.eth.getTransactionCount(contract.address), 'gas': gas})
 		signed_tx = web3.eth.account.signTransaction(key, private_key='8714f19637f79f8cdec1d994184ace4dda3984256f207147abee84a065f43941')
@@ -63,8 +61,19 @@ def transact():
 
 		classifier.train(train, label)
 
-		response = {'message' : 'Dados adicionados'}
-		return 'Done', 201
+		new_accuracy = classifier.evaluation()
+		payment = classifier.compareAccuracy(new_accuracy)
+
+		print("Current accuracy: ", classifier.accuracy)
+		print("New accuracy: ", new_accuracy)
+
+		if(payment == True):
+			classifier.accuracy = new_accuracy
+			response = {'message' : 'True'}
+		else:
+			response = {'message' : 'False'}
+
+		return response, 201
 
 @app.route('/predict', methods = ['POST'])
 def predict():
