@@ -1,15 +1,17 @@
 import re
+import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 from vowpalwabbit import pyvw
 from nltk.corpus import stopwords
 from flask import Flask, jsonify, request
+from sklearn.model_selection import KFold
 
 class Classifier:
     def __init__(self):
         self.vw = pyvw.vw("-i model/imdb2.model")
         self.valid = self.loadValidData()
-        self.accuracy = self.getAccuracy()
+        self.accuracy = self.evaluation()
     
     def cleanData(self, sentence):
 
@@ -37,15 +39,31 @@ class Classifier:
 
     def evaluation(self):
 
-        for index, row in self.valid.iterrows():
-            vw_text_valid = self.to_vw_format(row['processed_reviews'])
-            self.valid['probability'].loc[index] = self.vw.predict(vw_text_valid)
+        X = self.valid['processed_reviews']
+        y = self.valid['label']
 
-        self.valid.loc[self.valid.probability > 0, 'prediction'] = True
-        self.valid.loc[self.valid.probability < 0, 'prediction'] = False
-        self.valid["truth"] = self.valid.label==1
+        scores = []
 
-        return ((self.valid.truth==self.valid.prediction).mean())
+        cv = KFold(n_splits=5, random_state=42, shuffle=False)
+        for train_index, test_index in cv.split(X):
+            
+            probability = []
+            
+            X_train, X_test, y_train, y_test = X[train_index], X[test_index], y[train_index], y[test_index]
+            for index in X_test.iteritems():
+                vw_text_valid = self.to_vw_format(index[1])
+                probability.append(self.vw.predict(vw_text_valid))
+                
+            # Calcula acurácia
+            valid_data = pd.DataFrame(probability, columns=['probability'])
+            valid_data.loc[valid_data.probability > 0, 'prediction'] = True
+            valid_data.loc[valid_data.probability < 0, 'prediction'] = False
+            valid_data['truth'] = np.where(y_test==1, True, False)
+            
+            scores.append((valid_data.truth==valid_data.prediction).mean())
+
+        accuracy_mean = sum(scores) / len(scores)
+        return accuracy_mean
 
     def getAccuracy(self):
         return ((self.valid.truth==self.valid.prediction).mean())
