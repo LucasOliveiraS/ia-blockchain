@@ -40,10 +40,17 @@ classifier = Classifier()
 abi = Abi()
 connection = contract.connectContract(abi.getAbi())
 
-# Pegando os dados
 @app.route('/get_data', methods = ['GET'])
 def getData():
 	response = {'data' : len(contract.displayData(connection)[0])}
+	return jsonify(response), 200
+
+@app.route('/get_accuracy', methods = ['GET'])
+def getAccuracy():
+	accuracy = round(classifier.accuracy, 2)
+	accuracy_s = str(accuracy)
+
+	response = {'accuracy' : accuracy_s}
 	return jsonify(response), 200
 
 # Adicionando dados
@@ -55,10 +62,6 @@ def transact():
 		label = int(receive['label'])
 
 		train, label, gas = contract.addData(train, label, 420000)
-		key = connection.functions.handleAddData(contract.address, train, label).buildTransaction({'nonce': web3.eth.getTransactionCount(contract.address), 'gas': gas})
-		signed_tx = web3.eth.account.signTransaction(key, private_key='8714f19637f79f8cdec1d994184ace4dda3984256f207147abee84a065f43941')
-		web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-
 		classifier.train(train, label)
 
 		new_accuracy = classifier.evaluation()
@@ -68,8 +71,12 @@ def transact():
 		print("New accuracy: ", new_accuracy)
 
 		if(payment == True):
+			key = connection.functions.handleAddData(contract.address, train, label).buildTransaction({'nonce': web3.eth.getTransactionCount(contract.address), 'gas': gas})
+			signed_tx = web3.eth.account.signTransaction(key, private_key='YOUR KEY')
+			web3.eth.sendRawTransaction(signed_tx.rawTransaction)
+
+			response = {'message' : 'True', 'new_accuracy' : new_accuracy, 'last_accuracy' : classifier.accuracy}
 			classifier.accuracy = new_accuracy
-			response = {'message' : 'True'}
 		else:
 			response = {'message' : 'False'}
 

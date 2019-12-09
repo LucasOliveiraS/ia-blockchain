@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Input, FormField, Button, Dropdown} from 'semantic-ui-react';
+import { Form, Input, FormField, Button, Dropdown, Modal, Image, Header} from 'semantic-ui-react';
 
 const labelOptions = [
     {
@@ -17,11 +17,17 @@ const labelOptions = [
 export const TrainingForm = () => {
     const [train, setTrain] = useState('')
     const [target, setTarget] = useState('')
+    const [reward, setReward] = useState(false)
+    const [penalized, setPenalized] = useState(false)
 
     const getChange  =  (event, {value}) => {
         let choiceTarget = value;
         setTarget(choiceTarget);
     }
+
+    const handleCloseReward = () => setReward(false)
+
+    const handleClosePenalized = () => setPenalized(false)
 
     return(
         <Form>
@@ -49,23 +55,16 @@ export const TrainingForm = () => {
 
                     if(response.ok) {
                         console.log("Response worked!")
-                        window.ethereum.send('eth_sendTransaction', [{
-                            "from": "0x690809206b73994282910F1740a729a89aF4beCa",
-                            "to": "0xc0A08eB59ab5Fe19403d68555F4B51FC79c1B7b0",
-                            "gas": "0x76c0", // 30400
-                            "gasPrice": "0x9184e72a000", // 10000000000000
-                            "value": "0x9184e72a"
-                          }])
-                        .then(function (result) {
-                        // The result varies by method, per the JSON RPC API.
-                        // For example, this method will return a transaction hash on success.
-                        })
-                        .catch(function (error) {
-                        // Like a typical promise, returns an error on rejection.
-                        })
-
+            
                         const data = await response.json();
                         console.log('Saída: ',data.message);
+
+                        if(data.message == 'True') {
+                            setReward(true);
+                        } else if(data.message == 'False') {
+                            setPenalized(true);
+                        }
+                        
                     } else{
                         console.log("Not worked!")
                     }
@@ -73,6 +72,37 @@ export const TrainingForm = () => {
                 }}>
                     submit
                 </Button>
+
+            <Modal open={reward}
+                onClose={handleCloseReward} basic size='small'>
+                <Header icon='check' content='Você contribuiu com o modelo!' />
+                <Modal.Content>
+                <p>
+                        Os dados foram analisados. Você melhorou nosso desempenho!
+                </p>
+                <p>
+                    Recompensa: 0.31 Ether
+                </p>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick = {handleCloseReward}>Fechar</Button>
+                </Modal.Actions>
+            </Modal>
+
+            <Modal open={penalized}
+                onClose={handleClosePenalized} basic size='small'>
+                <Header icon='x' content='Desculpe' />
+                <Modal.Content>
+                <p>
+                    Os dados foram analisados. Você não melhorou nosso desempenho :(
+                </p>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick = {handleClosePenalized}>Fechar</Button>
+                </Modal.Actions>
+            </Modal>
+
+
             </Form.Field>
         </Form>
     );

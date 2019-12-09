@@ -1,5 +1,6 @@
 import React, {useLayoutEffect, useEffect, useState} from 'react';
 import './App.css';
+import { HeaderIMDB } from './components/Header'
 import { ListModels } from './components/ListModels'
 import TabExampleSecondaryPointing, { Tab } from './components/Tab'
 import { StatisticExampleGroup } from './components/StatisticData'
@@ -37,13 +38,12 @@ function App() {
 
   return (
     <Container style={{ marginTop: 40 }}>
-      <h3 class="ui header">Selecione o modelo: </h3>
-      <ListModels />
-      <div class="ui divider"></div>
+      <HeaderIMDB></HeaderIMDB>
       <TabExampleSecondaryPointing />
       <div style={{ marginTop: 40 }}></div>
       <StatisticExampleGroup />
     </Container>
+    
   );
 }
 
