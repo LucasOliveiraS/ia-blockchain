@@ -4,11 +4,11 @@
 
 > Descentralização e integridade dos dados em Inteligência Artificial
 
-A proposta do projeto é desenvolver aplicações de smart contracts capazes de guardar e validar informações na Blockchain Ethereum. Esses dados serão usados para o treinamento de um modelo de Machine Learning.
+A proposta do projeto é criar um sistema de compartilhamento de dados de forma descentralizada capaz de fornecer dados para diversos modelos de Machine Learning. Os dados compartilhados serão armazenados na Blockchain Ethereum.
 
-A Blockchain Ethereum atuária como um fonte de dados, de modo que os participantes da rede consigam colaborar com porções de dados para o modelo de Machine Learning.
+Os dados recebidos pelos participantes serão validados. Colaboradores que compartilharem dados que ajudem a melhorar o modelo serão recompensados. Participantes que compartilharem dados ruins serão penalizados.
 
-É possível que os dados compartilhados pelo integrante possam trazer lucro. Participantes que compartilharem dados ruins serão penalizados.
+É permitido também disponibilizar modelos para serem treinados. Os modelos, como também os dados ficam armazenados na Blockchain Ethereum por meio de Smart Contracts e estarão disponíveis para qualquer pessoa usar. O objetivo principal é democratizar a Inteligência Artificial para possibilitar o uso de maneira fácil e barata.
 
 ![IABlockchain](https://github.com/LucasOliveiraS/ia-blockchain/blob/master/assets/diagrama_inicial.jpg)
 
